@@ -15,11 +15,11 @@ object pepita {
 
 	method come(comida) {
 		energia = energia + comida.energia()
-		game.removeVisual(comida)
+		if (game.getObjectsIn(self.position()).contains(comida)) { game.removeVisual(comida) }
 	}
-	
+
 	method volaHacia(unaCiudad) {
-		if (ciudad != unaCiudad) {
+		if (ciudad != unaCiudad || position != ciudad.position()) {
 			self.move(unaCiudad.position())
 			ciudad = unaCiudad
 		} else {game.say(self, "Ya estoy en "+ unaCiudad.nombre() +"!")}
@@ -28,9 +28,8 @@ object pepita {
 	method irAComer(comida) {
 		if (game.getObjectsIn(comida.position()).contains(comida)) {
 			self.move(comida.position())
-			self.come(comida)
-		} else {game.say(self, "Ya me comí "+ comida.nombre() +"!")}
-		
+			// no hace falta indicar que coma porque se dispara el evento collide que hace lo mismo
+		} else {game.say(self, "No hay "+ comida.nombre() +" en el tablero")}
 	}
 	
 	method energiaParaVolar(distancia) = 15 + 5 * distancia
@@ -41,5 +40,7 @@ object pepita {
 			energia -= energiaRequerida
 			self.position(nuevaPosicion)
 		} else {game.say(self, "Dame de comer primero!")}
-	}	
+	}
+	
+	method overFoodAction(comida) {self.come(comida)}
 }
